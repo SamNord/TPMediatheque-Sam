@@ -1,6 +1,7 @@
 ﻿using MediathequeTP.Classes;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace MediathequeTP
 {
@@ -8,7 +9,8 @@ namespace MediathequeTP
     {
         static void Main(string[] args)
         {
-      
+            Console.OutputEncoding = Encoding.UTF8;
+
             IHMMediatheque Imedia = new IHMMediatheque();
 
             Imedia.Start();

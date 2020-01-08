@@ -12,19 +12,12 @@ namespace MediathequeTP.Classes
         private string nom;
         private string prenom;
         private string telephone;
-        private List<Oeuvre> oeuvreEmprunte;
-        private Oeuvre oeuvre;
-        private string titresEmprunte;
-
-        public int Id { get => id; set => id = value; }
+        private List<Oeuvre> oeuvreEmprunte; public int Id { get => id; set => id = value; }
         public string Nom { get => nom; set => nom = value; }
         public string Prenom { get => prenom; set => prenom = value; }
         public string Telephone { get => telephone; set => telephone = value; }
         public List<Oeuvre> OeuvreEmprunte { get => oeuvreEmprunte; set => oeuvreEmprunte = value; }
-        public string TitresEmprunte { get => titresEmprunte; set => titresEmprunte = value; }
-
         public Adherent() { }
-
         public Adherent(string n, string p, string t, int id)
         {
             cpt++;
@@ -43,17 +36,18 @@ namespace MediathequeTP.Classes
             Telephone = t;
             OeuvreEmprunte = new List<Oeuvre>();
         }
-
-        public string TitresE()
+        public string TitresEmprunte
         {
-            TitresEmprunte = "";
-            foreach (Oeuvre o in OeuvreEmprunte)
+            get
             {
-                TitresEmprunte += o.Titre + " ";
+                string titres = "";
+                foreach (Oeuvre o in oeuvreEmprunte)
+                {
+                    titres += $"\n{o.Titre} - {o.Type} - A rendre avant {o.DateRetour.ToString()}";
+                }
+                return titres;
             }
-            return TitresEmprunte;
         }
-
         public override string ToString()
         {
             return $"Identifiant: {Id}\n\r Nom: {Nom}\n\r  Prénom : {Prenom}\n\r  Téléphone : {Telephone} \n\rListes des oeurvres empruntés : {TitresEmprunte}";
