@@ -162,6 +162,7 @@ namespace MediathequeTP.Classes
 
         public void EmprunterOeuvre()
         {
+            ListOeuvre();
             Console.WriteLine("Numéro de l'oeuvre à emprunter : ");
             Int32.TryParse(Console.ReadLine(), out int id);
             oeuvre = mediatheque.GetOeuvreById(id);

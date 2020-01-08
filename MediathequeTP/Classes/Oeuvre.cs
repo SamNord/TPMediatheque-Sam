@@ -34,12 +34,12 @@ namespace MediathequeTP.Classes
             {
                 StreamReader reader = new StreamReader(File.Open("oeuvre.txt", FileMode.Open));
                 Id = Convert.ToInt32(reader.ReadToEnd());
-                reader.Close();
+                reader.Dispose();
             }
             Id = id;
             StreamWriter writer = new StreamWriter(File.Open("oeuvre.txt", FileMode.Create));
             writer.WriteLine(Id);
-            writer.Close();
+            writer.Dispose();
             Titre = t;
             Type = typ;
             Status = "disponible";

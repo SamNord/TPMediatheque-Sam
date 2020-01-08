@@ -49,28 +49,28 @@ namespace MediathequeTP.Classes
         {
             StreamReader reader = new StreamReader(File.Open(Nom + "-adherent.json", FileMode.Open));
             ListeAdherent = JsonConvert.DeserializeObject<List<Adherent>>(reader.ReadToEnd());
-            reader.Close();
+            reader.Dispose();
         }
 
         private void LireOeuvreJson()
         {
             StreamReader reader = new StreamReader(File.Open(Nom + "-oeuvre.json", FileMode.Open));
             ListeOeuvre = JsonConvert.DeserializeObject<List<Oeuvre>>(reader.ReadToEnd());
-            reader.Close();
+            reader.Dispose();
         }
 
         private void SauvegardeAdherent()
         {
             StreamWriter writer = new StreamWriter(File.Open(Nom + "-adherent.json", FileMode.Create));
             writer.WriteLine(JsonConvert.SerializeObject(ListeAdherent));
-            writer.Close();
+            writer.Dispose();
         }
 
         private void SauvegardeOeuvre()
         {
             StreamWriter writer = new StreamWriter(File.Open(Nom + "-oeuvre.json", FileMode.Create));
             writer.WriteLine(JsonConvert.SerializeObject(ListeOeuvre));
-            writer.Close();
+            writer.Dispose();
         }
 
         public void AjouterAdherent(Adherent a)
@@ -102,7 +102,7 @@ namespace MediathequeTP.Classes
             Adherent a = null;
             foreach (Adherent ad in ListeAdherent)
             {
-                if (a.Id == id)
+                if (ad.Id == id)
                 {
                     a = ad;
                     break;
