@@ -139,27 +139,32 @@ namespace MediathequeTP.Classes
             }
         }
 
-        public void Emprunter(int numero, string statut, DateTime de, DateTime dr)
+        public void Emprunter(int numero, string statut, DateTime de, DateTime dr, int idAdherent)
         {
-            if (NbMax <= 3)
-            {
-                foreach (Oeuvre o in ListeOeuvre)
+            Adherent ad = GetAdherentById(idAdherent);
+            if( ad!= null)
+            {            
+                if (ad.OeuvreEmprunte.Count < 3)
                 {
-                    if (o.Id == numero)
+                    foreach (Oeuvre o in ListeOeuvre)
                     {
-                        o.Status = statut;
-                        o.DateEmprunt = de;
-                        o.DateRetour = dr;
-                        NbMax++;
-                        Emprunte?.Invoke();
-                        break;
+                        if (o.Id == numero)
+                        {
+                            o.Status = statut;
+                            o.DateEmprunt = de;
+                            o.DateRetour = dr;
+                            ad.OeuvreEmprunte.Add(o);
+                            Emprunte?.Invoke();
+                            break;
+                        }
                     }
                 }
-            }
-            else
-            {
-                MaxOeuvreAtteint?.Invoke(NbMax);
-                IHMMediatheque.ChangeText("Vous avez déjà 3 livres empruntés", ConsoleColor.Red);
+                else
+                {
+                    MaxOeuvreAtteint?.Invoke(NbMax);
+                    IHMMediatheque.ChangeText("Vous avez déjà 3 livres empruntés", ConsoleColor.Red);
+                }
+
             }
 
             SauvegardeOeuvre();

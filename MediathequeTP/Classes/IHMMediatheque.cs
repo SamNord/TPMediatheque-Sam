@@ -163,6 +163,8 @@ namespace MediathequeTP.Classes
         public void EmprunterOeuvre()
         {
             ListOeuvre();
+            Console.WriteLine("votre identifiant : ");
+            Int32.TryParse(Console.ReadLine(), out int identifiant);
             Console.WriteLine("Numéro de l'oeuvre à emprunter : ");
             Int32.TryParse(Console.ReadLine(), out int id);
             oeuvre = mediatheque.GetOeuvreById(id);
@@ -174,7 +176,7 @@ namespace MediathequeTP.Classes
                     DateTime dateEmprunt = DateTime.Now;
                     DateTime dateRetour = dateEmprunt.AddDays(15);
                     mediatheque.Emprunte += () => ChangeText("Livre n°" + id + " emprunté", ConsoleColor.Yellow);
-                    mediatheque.Emprunter(id, "emprunté", dateEmprunt, dateRetour);
+                    mediatheque.Emprunter(id, "emprunté", dateEmprunt, dateRetour, identifiant);
                    
                 }
                 else

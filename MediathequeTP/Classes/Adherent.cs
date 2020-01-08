@@ -12,12 +12,16 @@ namespace MediathequeTP.Classes
         private string nom;
         private string prenom;
         private string telephone;
+        private List<Oeuvre> oeuvreEmprunte;
+        private Oeuvre oeuvre;
+        private string titresEmprunte;
 
         public int Id { get => id; set => id = value; }
         public string Nom { get => nom; set => nom = value; }
         public string Prenom { get => prenom; set => prenom = value; }
         public string Telephone { get => telephone; set => telephone = value; }
-
+        public List<Oeuvre> OeuvreEmprunte { get => oeuvreEmprunte; set => oeuvreEmprunte = value; }
+        public string TitresEmprunte { get => titresEmprunte; set => titresEmprunte = value; }
 
         public Adherent() { }
 
@@ -37,11 +41,22 @@ namespace MediathequeTP.Classes
             Nom = n;
             Prenom = p;
             Telephone = t;
+            OeuvreEmprunte = new List<Oeuvre>();
+        }
+
+        public string TitresE()
+        {
+            TitresEmprunte = "";
+            foreach (Oeuvre o in OeuvreEmprunte)
+            {
+                TitresEmprunte += o.Titre + " ";
+            }
+            return TitresEmprunte;
         }
 
         public override string ToString()
         {
-            return $"Identifiant: {Id}\n\r Nom: {Nom}\n\r  Prénom : {Prenom}\n\r  Téléphone : {Telephone}";
+            return $"Identifiant: {Id}\n\r Nom: {Nom}\n\r  Prénom : {Prenom}\n\r  Téléphone : {Telephone} \n\rListes des oeurvres empruntés : {TitresEmprunte}";
         }
     }
 }
