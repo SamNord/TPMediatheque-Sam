@@ -12,6 +12,8 @@ namespace MediathequeTP
             IHMMediatheque Imedia = new IHMMediatheque();
 
             Imedia.Start();
+
+            Console.ReadLine();
         }
     }
 }
