@@ -194,6 +194,8 @@ namespace MediathequeTP.Classes
 
         public void RendreOeuvre()
         {
+            Console.WriteLine("votre identifiant : ");
+            Int32.TryParse(Console.ReadLine(), out int identifiant);
             Console.WriteLine("Numéro de l'oeuvre à rendre : ");
             Int32.TryParse(Console.ReadLine(), out int id);
             oeuvre = mediatheque.GetOeuvreById(id);
@@ -201,7 +203,7 @@ namespace MediathequeTP.Classes
             {
                 mediatheque.OeuvreDispo += () => ChangeText("Livre n°" + id + " est disponible", ConsoleColor.Green);
                 DateTime dateRendu = DateTime.Now;
-                mediatheque.Rendre(id, dateRendu, "disponible");
+                mediatheque.Rendre(id, dateRendu, "disponible", identifiant);
             }
         }
 

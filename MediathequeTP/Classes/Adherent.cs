@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -35,6 +36,7 @@ namespace MediathequeTP.Classes
             Prenom = p;
             Telephone = t;
             OeuvreEmprunte = new List<Oeuvre>();
+
         }
         public string TitresEmprunte
         {
@@ -48,6 +50,7 @@ namespace MediathequeTP.Classes
                 return titres;
             }
         }
+
         public override string ToString()
         {
             return $"Identifiant: {Id}\n\r Nom: {Nom}\n\r  Prénom : {Prenom}\n\r  Téléphone : {Telephone} \n\rListes des oeurvres empruntés : {TitresEmprunte}";

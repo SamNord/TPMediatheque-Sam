@@ -154,6 +154,7 @@ namespace MediathequeTP.Classes
                             o.DateEmprunt = de;
                             o.DateRetour = dr;
                             ad.OeuvreEmprunte.Add(o);
+                            SauvegardeAdherent();
                             Emprunte?.Invoke();
                             break;
                         }
@@ -161,7 +162,7 @@ namespace MediathequeTP.Classes
                 }
                 else
                 {
-                    MaxOeuvreAtteint?.Invoke(NbMax);
+                    MaxOeuvreAtteint?.Invoke(ad.OeuvreEmprunte.Count);
                     IHMMediatheque.ChangeText("Vous avez déjà 3 livres empruntés", ConsoleColor.Red);
                 }
 
@@ -170,19 +171,24 @@ namespace MediathequeTP.Classes
             SauvegardeOeuvre();
         }
 
-        public void Rendre(int id, DateTime dr, string statut)
+        public void Rendre(int id, DateTime dr, string statut, int idAdherent)
         {
-            foreach(Oeuvre o in ListeOeuvre)
+            Adherent ad = GetAdherentById(idAdherent);
+            if(ad != null)
             {
-                if(o.Id == id)
+                foreach (Oeuvre o in ad.OeuvreEmprunte)
                 {
-                    o.Status = statut;
-                    o.DateRetour = DateTime.Now;
-                    NbMax--;
-                    OeuvreDispo?.Invoke();
+                    if (o.Id == id)
+                    {
+                        o.Status = statut;
+                        o.DateRetour = DateTime.Now;
+                        ad.OeuvreEmprunte.Remove(o);
+                        SauvegardeAdherent();
+                        OeuvreDispo?.Invoke();
+                    }
                 }
             }
-
+     
         }
 
 
