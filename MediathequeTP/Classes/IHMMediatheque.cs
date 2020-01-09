@@ -94,7 +94,7 @@ namespace MediathequeTP.Classes
             Console.Write("Téléphone : ");
             string tel = Console.ReadLine();
 
-            adherent = new Adherent(nom, prenom,tel, mediatheque.ListeAdherent.Count < 1 ? 1 : mediatheque.ListeAdherent[mediatheque.ListeAdherent.Count - 1].Id + 1);
+            adherent = new Adherent(nom, prenom, tel, mediatheque.ListeAdherent.Count < 1 ? 1 : mediatheque.ListeAdherent[mediatheque.ListeAdherent.Count - 1].Id + 1);
 
             mediatheque.AjouterAdherent(adherent);
 
@@ -109,10 +109,10 @@ namespace MediathequeTP.Classes
             Console.WriteLine("numéro adhérent à supprimer : ");
             Int32.TryParse(Console.ReadLine(), out int numero);
             adherent = mediatheque.GetAdherentById(numero);
-            if(adherent != null)
+            if (adherent != null)
             {
                 mediatheque.SupprimerAdherent(adherent);
-                ChangeText("adhérent n°"+numero+" supprimé", ConsoleColor.Red);
+                ChangeText("adhérent n°" + numero + " supprimé", ConsoleColor.Red);
             }
             else
             {
@@ -131,8 +131,17 @@ namespace MediathequeTP.Classes
             oeuvre = mediatheque.GetOeuvreById(numero);
             if (oeuvre != null)
             {
-                mediatheque.SupprimerOeuvre(oeuvre);
-                ChangeText("oeuvre n° " + numero + " supprimé", ConsoleColor.Red);
+                if (oeuvre.Status == "disponible")
+                {
+                    mediatheque.SupprimerOeuvre(oeuvre);
+                    ChangeText("oeuvre n° " + numero + " supprimé", ConsoleColor.Red);
+                }
+
+                else
+                {
+                    ChangeText("L'oeuvre est emprunté !", ConsoleColor.Red);
+                }
+
             }
             else
             {
@@ -142,76 +151,144 @@ namespace MediathequeTP.Classes
 
         public void ListAdherent()
         {
-            ChangeText("******************Liste des Adhérents****************", ConsoleColor.Green);
-            foreach (Adherent a in mediatheque.ListeAdherent)
+            //si la liste n'est pas vide, on l'affiche
+            if (mediatheque.ListeAdherent.Count > 0)
             {
-                Console.WriteLine(a);
+                ChangeText("**********************Liste des Adhérents********************", ConsoleColor.Green);
+                foreach (Adherent a in mediatheque.ListeAdherent)
+                {
+                    Console.WriteLine(a);
+                }
+                ChangeText("**********************Fin Liste********************", ConsoleColor.Green);
             }
-            ChangeText("**********************Fin Liste********************", ConsoleColor.Green);
+            //sinon on affiche un message
+            else
+            {
+                ChangeText("La liste est vide, veuillez ajouter un adhérent", ConsoleColor.Red);
+            }
+
         }
 
         public void ListOeuvre()
         {
-            ChangeText("***************Liste des Oeuvres****************", ConsoleColor.Magenta);
-            foreach (Oeuvre o in mediatheque.ListeOeuvre)
+            //si la liste n'est pas vide, on l'affiche
+            if (mediatheque.ListeOeuvre.Count > 0)
             {
-                Console.WriteLine(o);
+                ChangeText("************************Liste des Oeuvres*********************", ConsoleColor.Magenta);
+                foreach (Oeuvre o in mediatheque.ListeOeuvre)
+                {
+                    Console.WriteLine(o);
+                }
+                ChangeText("*********************Fin Liste****************", ConsoleColor.Magenta);
             }
-            ChangeText("*********************Fin Liste****************", ConsoleColor.Magenta);
+            //sinon on affiche un message
+            else
+            {
+                ChangeText("La liste est vide, veuillez ajouter une oeuvre", ConsoleColor.Red);
+            }
         }
 
         public void EmprunterOeuvre()
         {
+            //Affichage de la liste des oeuvres pour pouvoir choisir
             ListOeuvre();
             Console.WriteLine("votre identifiant : ");
             Int32.TryParse(Console.ReadLine(), out int identifiant);
-            Console.WriteLine("Numéro de l'oeuvre à emprunter : ");
-            Int32.TryParse(Console.ReadLine(), out int id);
-            oeuvre = mediatheque.GetOeuvreById(id);
-            if(oeuvre != null)
+            adherent = mediatheque.GetAdherentById(identifiant);
+
+            if (adherent != null)
             {
-                if (oeuvre.Status == "disponible")
+                Console.WriteLine("Numéro de l'oeuvre à emprunter : ");
+                Int32.TryParse(Console.ReadLine(), out int id);
+                //on récupère l'oeuvre correspondante au numéro à emprunter
+                oeuvre = mediatheque.GetOeuvreById(id);
+                //si cette oeuvre existe, et si son status est disponible alors on procède à son emprunt
+                if (oeuvre != null)
                 {
-                    //méthode changer status de l'oeuvre en emprunté
-                    DateTime dateEmprunt = DateTime.Now;
-                    DateTime dateRetour = dateEmprunt.AddDays(15);
-                    mediatheque.Emprunte += () => ChangeText("Livre n°" + id + " emprunté", ConsoleColor.Yellow);
-                    mediatheque.Emprunter(id, "emprunté", dateEmprunt, dateRetour, identifiant);
-                   
+                    if (oeuvre.Status == "disponible")
+                    {
+                        //méthode changer status de l'oeuvre en emprunté                  
+                        DateTime dateEmprunt = DateTime.Now;
+                        /*On ajoute 15 jours à la date d'emprunt via la méthode AddDays(nombre de jours à ajouter en int)*/
+                        DateTime dateRetour = dateEmprunt.AddDays(15);
+                        /*on abonne l'événement définit dans Mediatheque à une méthode sans paramètre qui envoit un message */
+                        mediatheque.Emprunte += () => ChangeText("Livre n°" + id + " emprunté", ConsoleColor.Yellow);
+                        /*j'ai abonné une autre méthode(voir plus bas) à lévénement qui déclenche un effet sonore*/
+                        mediatheque.Emprunte += AlertSonore;
+                        /*en appelant la méthode Emprunter décrit dans Mediatheque, on déclenche également l'événement qu'on a mis à l'intérieur de Emprunter*/
+                        //dans la méthode emprunter on sauvegarde et on ajoute l'oeuvre empruntée au compte de l'adhérent
+                        mediatheque.Emprunter(id, "emprunté", dateEmprunt, dateRetour, identifiant);
+
+                    }
+                    //sinon on affiche un message
+                    else
+                    {
+                        ChangeText("Désolé, cet oeuvre n'est pas disponible", ConsoleColor.Magenta);
+                    }
                 }
+                //si l'oeuvre n'appartient pas à la médiathèque, on affiche un message
                 else
                 {
-                    ChangeText("Désolé, cet oeuvre n'est pas disponible", ConsoleColor.Magenta);
+                    ChangeText("Pas d'oeuvre à ce numéro", ConsoleColor.Red);
                 }
             }
 
             else
             {
-                ChangeText("Pas d'oeuvre à ce numéro", ConsoleColor.Red);
+                ChangeText("Vous n'êtes pas inscrit, veuillez vous inscrire", ConsoleColor.Red);
             }
-       
         }
 
         public void RendreOeuvre()
         {
             Console.WriteLine("votre identifiant : ");
             Int32.TryParse(Console.ReadLine(), out int identifiant);
-            Console.WriteLine("Numéro de l'oeuvre à rendre : ");
-            Int32.TryParse(Console.ReadLine(), out int id);
-            oeuvre = mediatheque.GetOeuvreById(id);
-            if(oeuvre != null)
+            //on recherche l'adhérent
+            adherent = mediatheque.GetAdherentById(identifiant);
+            if (adherent != null)
             {
-                mediatheque.OeuvreDispo += () => ChangeText("Livre n°" + id + " est disponible", ConsoleColor.Green);
-                DateTime dateRendu = DateTime.Now;
-                mediatheque.Rendre(id, dateRendu, "disponible", identifiant);
+                Console.WriteLine(adherent);
+
+                if (adherent.OeuvreEmprunte.Count > 0)
+                {
+                    Console.WriteLine("Numéro de l'oeuvre à rendre : ");
+                    Int32.TryParse(Console.ReadLine(), out int id);
+                    oeuvre = mediatheque.GetOeuvreById(id);
+                    if (oeuvre != null)
+                    {
+                        mediatheque.OeuvreDispo += () => ChangeText("Livre n°" + id + " est disponible", ConsoleColor.Green);
+                        mediatheque.OeuvreDispo += AlertSonore;
+                        DateTime dateRendu = DateTime.Now;
+                        mediatheque.Rendre(id, dateRendu, "disponible", identifiant);
+                    }
+                }
+                else
+                {
+                    ChangeText("votre liste est vide!!", ConsoleColor.Red);
+                }
+            }
+
+            else
+            {
+                ChangeText("Vous n'êtes pas inscrit, veuillez vous inscrire", ConsoleColor.Red);
             }
         }
 
         public void GetOeuvreByStatut()
-        {         
-            Console.WriteLine("Liste : disponible/emprunté");
+        {
+            Console.WriteLine("afficher liste des oeuvres : emprunté/disponible?");
             string stat = Console.ReadLine();
-             mediatheque.GetOeuvreDispo(stat);
+            if (stat == "disponible")
+            {
+                ChangeText("************Liste des oeuvres disponibles******", ConsoleColor.Cyan);
+                mediatheque.GetOeuvreDispo("disponible");
+            }
+            else
+            {
+                ChangeText("**************Liste des oeuvres empruntées******", ConsoleColor.Blue);
+                mediatheque.GetOeuvreDispo("emprunté");
+            }
+
         }
 
         /*****************************************MENU******************************************/
@@ -234,6 +311,13 @@ namespace MediathequeTP.Classes
         {
             Console.ForegroundColor = color;
             Console.WriteLine(m);
+        }
+
+        public static void AlertSonore()
+        {
+            Console.Beep(659, 125);
+            Console.Beep(659, 125);
+            Console.Beep(32400, 125);
         }
 
     }

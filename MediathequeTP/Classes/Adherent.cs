@@ -45,7 +45,9 @@ namespace MediathequeTP.Classes
                 string titres = "";
                 foreach (Oeuvre o in oeuvreEmprunte)
                 {
-                    titres += $"\n{o.Titre} - {o.Type} - A rendre avant {o.DateRetour.ToString()}";
+                    //titres += $"\n{o.Titre} - {o.Type} - A rendre avant {o.DateRetour.ToString()}";
+                    titres += $"\nNuméro : {o.Id}\n Titre : {o.Titre} - Type : {o.Type} - Date d'emprunt : {o.DateEmprunt.Day}/{o.DateEmprunt.Month}/{o.DateEmprunt.Year}\n" +
+                    $"----> A rendre avant le {o.DateRetour.Day}/{o.DateRetour.Month}/{o.DateRetour.Year}";
                 }
                 return titres;
             }
@@ -53,7 +55,9 @@ namespace MediathequeTP.Classes
 
         public override string ToString()
         {
-            return $"Identifiant: {Id}\n\r Nom: {Nom}\n\r  Prénom : {Prenom}\n\r  Téléphone : {Telephone} \n\rListes des oeurvres empruntés : {TitresEmprunte}";
+            //return $"Identifiant: {Id}\n\r Nom: {Nom}\n\r  Prénom : {Prenom}\n\r  Téléphone : {Telephone} \n\rListes des oeurvres empruntés : {TitresEmprunte}";
+            return $"---------Identifiant: {Id}---------\n\r Nom: {Nom}\n\r  Prénom : {Prenom}\n\r  Téléphone : {Telephone} \n\rListes des oeurvres empruntés : {TitresEmprunte}";
+
         }
     }
 }

@@ -47,7 +47,11 @@ namespace MediathequeTP.Classes
 
         public override string ToString()
         {
-            return $"Identifiant: {Id}\n\r Titre: {Titre}\n\r Type: {Type}\n\r Statut : {Status}\n\r  Date d'emprunt : {DateEmprunt}\n\r Date retour : {DateRetour}";
+            //return $"Identifiant: {Id}\n\r Titre: {Titre}\n\r Type: {Type}\n\r Statut : {Status}\n\r  Date d'emprunt : {DateEmprunt}\n\r Date retour : {DateRetour}";
+            return $"--------------Identifiant: {Id}----------------\n\r Titre: {Titre}\n\r Type: {Type}\n\r" +
+              $" Statut : {Status}\n\r" +
+              $"  Date d'emprunt : {DateEmprunt.Day}/{DateEmprunt.Month}/{DateEmprunt.Year}\n\r" +
+              $" Date retour : {DateRetour.Day}/{DateRetour.Month}/{DateRetour.Year}";
         }
     }
 }
