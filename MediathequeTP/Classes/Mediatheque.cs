@@ -10,7 +10,9 @@ namespace MediathequeTP.Classes
     public class Mediatheque
     {
         //mis à jour--> on utilise les locks et les tasks au niveau des lecture et écritures des fichiers
-        static object _lock = new object();
+        //on a besoin de deux locks : un pour lire les fichiers et un pour l'écriture
+        static object _lockWrite = new object();
+        static object _lockRead = new object();
         private string nom;
         List<Adherent> listeAdherent;
         List<Oeuvre> listeOeuvre;
@@ -55,7 +57,7 @@ namespace MediathequeTP.Classes
 
         private void LireAdherentJson()
         {
-            lock (_lock)
+            lock (_lockRead)
             {
                 StreamReader reader = new StreamReader(File.Open(Nom + "-adherent.json", FileMode.Open));
                 ListeAdherent = JsonConvert.DeserializeObject<List<Adherent>>(reader.ReadToEnd());
@@ -66,7 +68,7 @@ namespace MediathequeTP.Classes
 
         private void LireOeuvreJson()
         {
-            lock (_lock)
+            lock (_lockRead)
             {
                 StreamReader reader = new StreamReader(File.Open(Nom + "-oeuvre.json", FileMode.Open));
                 ListeOeuvre = JsonConvert.DeserializeObject<List<Oeuvre>>(reader.ReadToEnd());
@@ -77,7 +79,7 @@ namespace MediathequeTP.Classes
 
         private void SauvegardeAdherent()
         {
-            lock (_lock)
+            lock (_lockWrite)
             {
                 StreamWriter writer = new StreamWriter(File.Open(Nom + "-adherent.json", FileMode.Create));
                 writer.WriteLine(JsonConvert.SerializeObject(ListeAdherent));
@@ -87,7 +89,7 @@ namespace MediathequeTP.Classes
 
         private void SauvegardeOeuvre()
         {
-            lock (_lock)
+            lock (_lockWrite)
             {
                 StreamWriter writer = new StreamWriter(File.Open(Nom + "-oeuvre.json", FileMode.Create));
                 writer.WriteLine(JsonConvert.SerializeObject(ListeOeuvre));
